@@ -1,0 +1,494 @@
+Mutual exclusion
+
+Centralised approach:
+import java.io.*;
+class cent
+{
+
+public int flag=0;
+public int front=0;
+public int rear=-1;
+public boolean grant;
+
+int[] queue=new int[10];
+public void request(int p)
+{
+
+if(flag==0)
+{
+System.out.println("reply to"+p);
+flag=1;
+}
+else
+{
+if(flag==1)
+{
+System.out.println("process wait "+p);
+rear++;
+queue[rear]=p;
+}
+}
+
+}
+
+public void release(int p)
+{
+flag=0;
+if(queue[front]!=0)
+{
+System.out.println("delete from queue"+queue[front]);
+request(queue[front]);
+front=front+1;
+System.out.println("released"+p);
+}
+
+
+
+}
+
+public static void main(String args[]) throws IOException
+
+{
+int p=5;
+cent c=new cent();
+c.request(p);
+c.request(6);
+c.request(7);
+c.release(p);
+c.release(6);
+
+}
+}
+
+
+
+import java.util.*;
+
+public class Mutex 
+{
+
+   
+    public static void main(String[] args) 
+    {
+        Scanner sc=new Scanner(System.in);
+        int opt,opt1;
+        
+        int p1=1;
+        int p2=2;
+        int p3=3;
+        int flag=0;
+        int cs=0;
+        
+        Queue<Integer> q = new LinkedList<>();
+   
+        
+        do
+        {
+        System.out.println("******MENU******");
+        System.out.println("1.Request the critical section");
+        System.out.println("2.Release the critical section");
+        System.out.println("3.Exit");
+        opt=sc.nextInt();
+        switch(opt)
+        {
+            case 1:
+            {
+                
+                System.out.println("Select a process");
+                System.out.println("1.P1");
+                System.out.println("2.P2");
+                System.out.println("3.P3");
+                opt1=sc.nextInt();
+                switch(opt1)
+                {
+                    case 1:
+                    {
+                        if(flag==0)
+                        {
+                           cs=1;
+                           flag=1;
+                        }
+                        
+                        else
+                        {
+                            System.out.println("Process p"+cs+" is already in the critical section");
+                            
+                            q.add(p1);
+                        }
+                        
+                       System.out.println("System status : ");
+                       System.out.println("Critical section occupied by p"+cs);
+                       System.out.println("Prcesses waiting are : "+q);
+                       
+                        
+                         break;   
+                    }
+                    
+                    case 2:
+                    {
+                        if(flag==0)
+                        {
+                           cs=2;
+                           flag=1;
+                        }
+                        
+                        else
+                        {
+                            System.out.println("Process p"+cs+" is already in the critical section");
+                            
+                            q.add(p2);
+                        }
+                        
+                       System.out.println("System status : ");
+                       System.out.println("Critical section occupied by p"+cs);
+                       System.out.println("Prcesses waiting are : "+q);
+                       
+                        
+                         break;   
+                    }
+                    
+                    case 3:
+                    {
+                        if(flag==0)
+                        {
+                           cs=3;
+                           flag=1;
+                        }
+                        
+                        else
+                        {
+                            System.out.println("Process p"+cs+" is already in the critical section");
+                            
+                            q.add(p3);
+                        }
+                        
+                       System.out.println("System status : ");
+                       System.out.println("Critical section occupied by p"+cs);
+                       System.out.println("Prcesses waiting are : "+q);
+                      
+                        
+                         break;   
+                    }
+                }
+            break;   
+            }
+            
+            case 2:
+            {
+                
+                System.out.println("The process p"+cs+" is removed from critical section");
+                if(!q.isEmpty())
+                {
+                cs=q.peek();
+                
+                q.remove();
+                System.out.println("System status : ");
+                System.out.println("Critical section occupied by p"+cs);
+                }
+                else
+                {
+                System.out.println("No processes waiting in the queue");
+                flag=0;
+                }
+                //System.out.println("Processes waiting are : "+q);
+                
+                                
+            break;        
+            }
+            
+            case 3:
+            {
+                break;
+            }
+        }
+        }while(opt!=3);
+                
+    }
+    
+}
+
+
+ANOTHER PROGRAM FOR MUTUAL EXCLUSION
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Centralized {
+    public static void main(String args[]) throws IOException {
+        int cs = 0; /*cs will be allotted the value of the process number .
+         if cs==0 , critical section isnt occupied by any process*/
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("\n\nEnter The Number of Processes : ");
+        int nop = sc.nextInt();
+        System.out.print("\nChoose the co-ordinator process : ");
+        int cord = sc.nextInt();
+        ArrayList<Integer> queue = new ArrayList();
+        int bharahua = 0;
+        int pn = 0;
+        do {
+            System.out.println("***** PROCESSES *****");
+            for (int i = 0; i < nop; i++) {
+                if (i + 1 != cord) {
+                    System.out.println("Process " + (i + 1));
+                }
+            }
+            if (cs == 0) {
+                System.out.println("No process in critical section");
+            } else {
+                System.out.println("Process " + cs + " in critical section");
+            }
+            if (queue.isEmpty()) {
+                System.out.println("Queue is empty");
+            } else {
+                System.out.println("Queue: " + queue);
+            }
+            System.out.print("\nEnter Process number for action (0 to EXIT) : ");
+            pn = sc.nextInt();
+            if (pn > 0 && pn != cord && pn <= nop) {
+                if (pn != cs) {
+                    System.out.println("Do you want to request critical section ? (Y/N)");
+                    char ans = sc.next().charAt(0);
+                    if (ans == 'y' || ans == 'Y') {
+                        int j;
+                        for (j = 0; j < queue.size(); j++) {
+                            if (queue.get(j) == pn) {
+                                break;
+                            }
+                        }
+                        if (j < queue.size()) {
+                            System.out.println("Process " + pn + " already in queue");
+                            continue;
+                        }
+                        if (cs == 0) {
+                            cs = pn;
+                            System.out.println("Process " + pn + " alloted Critical Section");
+                        } else {
+                            queue.add(pn);
+                            System.out.println("Process " + pn + " added to queue");
+                        }
+                    } else {
+                        continue;
+                    }
+                } else {
+                    System.out.flush();
+                    System.out.println("Do you want to release critical section ? (Y/N)");
+                    char ans = sc.next().charAt(0);
+                    if (ans == 'y' || ans == 'Y') {
+                        System.out.println("Process " + pn + " released Critical Section");
+                        if (queue.isEmpty()) {
+                            cs = 0;
+                            System.out.println("Critical Section Empty");
+                        } else {
+                            cs = queue.get(0);
+                            System.out.println("Process " + cs + " alloted Critical Section");
+                            queue.remove(0);
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+            } else {
+                System.out.println("Invalid Input :(");
+            }
+        } while (pn != 0);
+    }
+    
+}
+Output : 
+
+
+
+
+
+
+
+
+BANKERS
+
+
+import java.util.Scanner;
+public class Bankers{
+    private int need[][],allocate[][],max[][],avail[][],np,nr;
+    
+    private void input(){
+     Scanner sc=new Scanner(System.in);
+     System.out.print("Enter no. of processes and resources : ");
+     np=sc.nextInt();  //no. of process
+     nr=sc.nextInt();  //no. of resources
+     need=new int[np][nr];  //initializing arrays
+     max=new int[np][nr];
+     allocate=new int[np][nr];
+     avail=new int[1][nr];
+     
+     System.out.println("Enter allocation matrix -->");
+     for(int i=0;i<np;i++)
+          for(int j=0;j<nr;j++)
+         allocate[i][j]=sc.nextInt();  //allocation matrix
+      
+     System.out.println("Enter max matrix -->");
+     for(int i=0;i<np;i++)
+          for(int j=0;j<nr;j++)
+         max[i][j]=sc.nextInt();  //max matrix
+      
+        System.out.println("Enter available matrix -->");
+        for(int j=0;j<nr;j++)
+         avail[0][j]=sc.nextInt();  //available matrix
+        
+        sc.close();
+    }
+    
+    private int[][] calc_need(){
+       for(int i=0;i<np;i++)
+         for(int j=0;j<nr;j++)  //calculating need matrix
+          need[i][j]=max[i][j]-allocate[i][j];
+       
+       return need;
+    }
+ 
+    private boolean check(int i){
+       //checking if all resources for ith process can be allocated
+       for(int j=0;j<nr;j++) 
+       if(avail[0][j]<need[i][j])
+          return false;
+   
+    return true;
+    }
+
+    public void isSafe(){
+       input();
+       calc_need();
+       boolean done[]=new boolean[np];
+       int j=0;
+
+       while(j<np){  //until all process allocated
+       boolean allocated=false;
+       for(int i=0;i<np;i++)
+        if(!done[i] && check(i)){  //trying to allocate
+            for(int k=0;k<nr;k++)
+            avail[0][k]=avail[0][k]-need[i][k]+max[i][k];
+         System.out.println("Allocated process : "+i);
+         allocated=done[i]=true;
+               j++;
+             }
+          if(!allocated) break;  //if no allocation
+       }
+       if(j==np)  //if all processes are allocated
+        System.out.println("\nSafely allocated");
+       else
+        System.out.println("All proceess cant be allocated safely");
+    }
+    
+    public static void main(String[] args) {
+       new Bankers().isSafe();
+    }
+}
+
+
+
+RMI to add two numbers
+
+RmiImpl.java
+
+import java.rmi.*;
+import java.rmi.server.*;
+
+public class RmiImpl extends UnicastRemoteObject implements RmiExample
+{
+	public RmiImpl() throws RemoteException
+	{}
+	public int add(int a,int b) throws RemoteException
+	{
+		return a+b;
+	}
+}
+
+
+RmiExample.java
+
+import java.rmi.*;
+
+public interface RmiExample extends Remote
+{
+	public int add(int a,int b) throws RemoteException;
+}
+
+
+Client1.java
+
+import java.rmi.*;
+import java.rmi.server.*;
+
+public class Client1
+{
+	public static void main(String[] args) throws Exception
+	{
+		RmiExample r=(RmiExample)Naming.lookup("rmi://localhost/add");
+		System.out.println("Sum is "+r.add(10,5));
+	}
+}
+
+Server1.java
+
+import java.rmi.*;
+import java.rmi.server.*;
+
+public class Server1
+{
+	public static void main(String[] args) throws RemoteException
+	{
+		RmiImpl obj=new RmiImpl();
+		try
+		{
+			Naming.rebind("add",obj);
+		}
+		catch(Exception e)
+		{}
+		
+		System.out.println("Server started");
+	}
+}
+
+
+OUTPUT:
+
+
+
+
+
+EJB
+
+Steps-
+
+Project-Java EE- Enterprise Application (GlassFish 4 supports Java EE 6)
+War-- new JSP---remember filename
+In jsp
+        <body>
+        <form action="servlet1" method="post"/>
+        <input type="text" name="t1"/>
+        <input type="text" name="t2"/>
+        <input type="submit" value="ok"/>
+        </body>
+      4) Bean--New--Other--Enterprise Javabeans-Session Bean--Name: addBean
+Package: SessionBean-- Tick Local in Create interface-- Finish
+	5) inside class--insert code--business method--name it as add
+	Return type- search integer--int
+Add parameters and adjust type
+Change return null--value required
+
+6) war--new Servlet-- name- form action name
+	Package SessionBean
+Next-- deployment tick--finish
+
+7) go in  servlet class-- insert code--enterprise bean--go to your ejb bean--expand---select bean name--(addBean)
+
+8) Go after the body tag--write
+int a=Integer.parseInt(request.getParameter("t1"));
+ int b=Integer.parseInt(request.getParameter("t2"));
+out.println("<h1>Sum is "+addBean.add(a, b)+"</h1>");
+
+9) Triangle- deploy
+    --run
+10) Html--/<jspname>
+
